@@ -1,0 +1,86 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.3'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+/*
+ * Enables the "-parameters" compiler flag for Java.
+ * This retains method parameter names at runtime,
+ * allowing frameworks like Spring and Jackson to
+ * access them via reflection.
+ *
+ * Useful for SpEL expressions, JSON deserialization,
+ * and method argument mapping. Safe for production.
+ */
+
+tasks.withType(JavaCompile) {
+	options.compilerArgs << "-parameters"
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	implementation 'com.google.code.gson:gson:2.9.1'
+	implementation 'org.mapstruct:mapstruct:1.6.3'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+	testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+
+	implementation 'org.hashids:hashids:1.0.1'
+	implementation 'commons-codec:commons-codec:1.15'
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
+
+	// Enables metadata generation for @ConfigurationProperties:
+	// - Adds IDE autocomplete and validation for application.properties/yml
+	// - Generates spring-configuration-metadata.json at compile time
+	// - Helps catch typos and invalid config keys early
+	// - Supports JSR-303 validation annotations (@NotNull, etc.)
+	// - Improves overall dev experience with better tooling support
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+	implementation 'org.springframework.security:spring-security-core:6.3.1'
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+
+	// https://mvnrepository.com/artifact/com.google.guava/guava -> for bloom filter
+	implementation 'com.google.guava:guava:33.4.8-jre'
+
+	// https://mvnrepository.com/artifact/com.razorpay/razorpay-java
+	implementation 'com.razorpay:razorpay-java:1.4.8'
+
+	implementation 'com.dropbox.core:dropbox-core-sdk:7.0.0'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
